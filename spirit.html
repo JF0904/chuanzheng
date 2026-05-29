@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>福建船政 · 精神财富 | 百年船政文化传承</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: #0a0a2a;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Noto Serif SC', 'Georgia', 'Times New Roman', serif;
+        }
+
+        /* 主容器 - 用于内容展示，可滚动 */
+        .page-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            color: white;
+            text-align: center;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* ---------- 背景层：紫色圆点旋转（完全保留） ---------- */
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .dynamic-bg::before {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="0.9"/></svg>');
+            background-size: 90px 90px;
+            background-repeat: repeat;
+            animation: floatSlow 32s linear infinite;
+            pointer-events: none;
+        }
+
+        .dynamic-bg::after {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.6"/></svg>');
+            background-size: 110px 110px;
+            background-repeat: repeat;
+            animation: floatReverse 40s linear infinite reverse;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .dynamic-bg .aura-overlay {
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            background: radial-gradient(circle at 30% 40%, rgba(120, 80, 200, 0.25), transparent 60%),
+                        repeating-radial-gradient(circle at 70% 60%, rgba(200, 130, 255, 0.1), transparent 80px);
+            filter: blur(65px);
+            mix-blend-mode: screen;
+            animation: slowRotate 34s infinite reverse linear;
+            pointer-events: none;
+        }
+
+        .dynamic-bg .grid-enhance {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px),
+                repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px);
+            pointer-events: none;
+            animation: subtleShift 24s linear infinite;
+        }
+
+        @keyframes floatSlow {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-120px, -120px) rotate(360deg); }
+        }
+
+        @keyframes floatReverse {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(80px, 80px) rotate(360deg); }
+        }
+
+        @keyframes slowRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes subtleShift {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        /* ========== 内容卡片（透明但增加文字衬底，保持可读） ========== */
+        .content-card {
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(8px);
+            border-radius: 2rem;
+            padding: 2rem 2rem;
+            max-width: 1100px;
+            width: 100%;
+            margin-top: 0.5rem;
+            border: 1px solid rgba(200, 180, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(138, 90, 210, 0.3);
+            transition: box-shadow 0.3s ease;
+            text-align: left;
+        }
+
+        .content-card:hover {
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(138, 90, 210, 0.5);
+            border-color: rgba(210, 170, 255, 0.7);
+        }
+
+        /* 标题区域 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(210, 170, 255, 0.5);
+            padding-bottom: 1.2rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.2rem;
+            color: #FFD966;
+            text-decoration: none;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 217, 102, 0.5);
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .back-link:hover {
+            background: rgba(255, 217, 102, 0.2);
+            border-color: #FFD966;
+            transform: translateY(-2px);
+            box-shadow: 0 0 12px rgba(255, 217, 102, 0.3);
+        }
+
+        .spirit-title {
+            font-size: clamp(2rem, 6vw, 3rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFE6B0, #FFD966, #FFB347);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+            margin: 0.5rem 0;
+        }
+
+        .subhead {
+            font-size: 1.1rem;
+            color: rgba(245, 235, 255, 0.9);
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        /* 章节样式 - 美观清晰 */
+        .chapter {
+            margin-bottom: 2rem;
+            border-left: 4px solid #FFD966;
+            padding-left: 1.5rem;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 0 1rem 1rem 0;
+            transition: all 0.2s;
+        }
+
+        .chapter:hover {
+            background: rgba(0, 0, 0, 0.35);
+            border-left-color: #FFB347;
+        }
+
+        .chapter-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #FFE6B0;
+            margin-bottom: 1rem;
+            padding-top: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .chapter-title .emoji {
+            font-size: 2rem;
+        }
+
+        .chapter-content {
+            font-size: 1rem;
+            line-height: 1.85;
+            color: #f0ecff;
+            text-align: justify;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        .chapter-content p {
+            margin-bottom: 1rem;
+        }
+
+        /* 特殊高亮 */
+        .highlight {
+            color: #FFD966;
+            font-weight: 500;
+        }
+
+        .insight-note {
+            background: rgba(255, 217, 102, 0.12);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-style: normal;
+            border: 1px solid rgba(255, 217, 102, 0.3);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* 返回顶部按钮 + 装饰 */
+        .footer-spirit {
+            margin-top: 3rem;
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-return {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            padding: 0.7rem 2rem;
+            border-radius: 50px;
+            color: #FFE6B0;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid rgba(255, 217, 102, 0.6);
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-return:hover {
+            background: rgba(255, 217, 102, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 0 18px rgba(255, 217, 102, 0.4);
+            color: white;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .content-card {
+                padding: 1.2rem;
+            }
+            .chapter {
+                padding-left: 1rem;
+            }
+            .chapter-title {
+                font-size: 1.4rem;
+            }
+            .chapter-title .emoji {
+                font-size: 1.6rem;
+            }
+            .chapter-content {
+                font-size: 0.95rem;
+                line-height: 1.7;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chapter-title {
+                font-size: 1.25rem;
+            }
+            .spirit-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            background: #1a0f2a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #9f7eff;
+            border-radius: 8px;
+        }
+        ::selection {
+            background: #9f7eff;
+            color: #0a0a2a;
+        }
+    </style>
+</head>
+<!-- AI小助手样式和脚本 -->
+<link rel="stylesheet" href="ai-chatbot.css">
+<script src="ai-chatbot.js"></script>
+<body>
+
+    <!-- 动态紫色圆点旋转背景（与首页完全一致） -->
+    <div class="dynamic-bg">
+        <div class="aura-overlay"></div>
+        <div class="grid-enhance"></div>
+    </div>
+
+    <div class="page-container">
+        <div class="content-card">
+            <div class="page-header">
+                <a href="index.html" class="back-link">← 返回首页</a>
+                <h1 class="spirit-title">✦ 福建船政 · 精神财富 ✦</h1>
+                <div class="subhead">福建船政为后人留下诸多宝贵的物质和精神财富，有诸多传统精神值得发扬光大。</div>
+            </div>
+
+            <!-- 民族自强 -->
+            <div class="chapter">
+                <div class="chapter-title">
+                    <span class="emoji">🏛️</span> 民族自强
+                </div>
+                <div class="chapter-content">
+                    <p>19世纪中叶，列强侵华势力扩张使“神威远震”的“天朝上国”向外国人屈膝妥协，签订了一系列丧权辱国的不平等条约。有识之士莫不为之痛心疾首，谋求富国强兵之道。“师夷长技以制夷”、“欲防海之害而收其利，非整治水师不可；欲整治水师，非设局监造轮船不可”、“买船有受外国支配之弊，只有造轮船才能夺彼族所恃”、“船政之兴衰在于人才的培养”等主张被越来越多的人所理解和接受，革新图强的呼声愈来愈高。</p>
+                    <p>福建船政正是在这样历史背景下创办的。船政员工以其坚韧不拔的民族自强精神，艰苦创业，开拓革新，创造了许多旷古未有的光辉业绩。不仅制造出中国近代海军的第一批军舰、组建了中国近代第一支海军舰队，制造出中国第一批飞机，而且创办了船政学堂，培养了一大批工程技术人才、社会科学人才，翻译西方小说《巴黎茶花女遗事》、西方学术著作《天演论》，极大推动了中华民族的思想解放、对外开放和中国近代化进程。</p>
+                </div>
+            </div>
+
+            <!-- 崇尚科学 -->
+            <div class="chapter">
+                <div class="chapter-title">
+                    <span class="emoji">🔬</span> 崇尚科学
+                </div>
+                <div class="chapter-content">
+                    <p>在兴建船政之前，左宗棠就考虑如何培养人才，以应需要，建议设立“艺局”。沈葆桢高瞻远瞩认为：船政根本在于学堂，船政前途的兴衰在于人才的培养。建厂之初就创办“求是堂艺局”，不久改称船政学堂，分前学堂、后学堂。后又增设绘事院、艺圃，民国二年船政学堂分出福州海军制造学校、福州海军学校、艺圃改称福州海军艺术学校，绘事院改称绘算所。</p>
+                    <p>1917年设福州海军飞潜学校、后艺术学校改为勤工学校，增设福建省林森高级商船职业学校。1946年勤工、商船二校合并，改称福建省立高级航空机械商船职业学校，为中国近代的造船、航海、文化、天文、航空、铁路、机械等培养大批科技人才。1867年建成船政衙门，沈葆桢特地写了一副楹联悬挂在大门：“且慢道见所未见，闻所未闻，即此是格致关头，认真下手处；何以能精益求精，密益求密，定须从鬼神屋漏，仔细扪心来”，以此激励广大员工勤奋进取，认真刻苦学习格物致知的科学道理。船政引进西方科学技术和管理经验，行政管理层层负责、处处把关，要求行政管理人员必须熟悉洋务。</p>
+                </div>
+            </div>
+
+            <!-- 对外开放 -->
+            <div class="chapter">
+                <div class="chapter-title">
+                    <span class="emoji">🌐</span> 对外开放
+                </div>
+                <div class="chapter-content">
+                    <p>林则徐是我国近代史上“睁眼看世界”的第一人。左宗棠、沈葆桢等人更明白知夷才能制夷的道理，既重视社会经济的改造，更重视近代西方最新科技成就的吸收，采取“请进来，送出去”的举措，把开放意识化为扎实的行动。“请进来”就是以高价购买、引进西方先进科学技术；以高薪聘请洋教习，实行“拿来主义”。先后聘用日意格、德克碑为正、副监督，共81名洋师、洋匠。聘用过程始终在坚持“独立自主、权操在我”原则的同时，注重发挥外籍专家的作用。对表现优秀的洋教习一再续聘，而不能胜任者则断然解雇遣返。学习西方科学技术和管理经验注重与中国国情结合，有所继承和创新。</p>
+                    <p>“送出去”即选派留学生出国深造，从船政学堂毕业生中选出天资颖异、学有根柢者赴法、英等西方国家深究造船驶船、练兵制胜之理。学成而归，报效国家。事实说明，“拿来主义”对推动中国近代化进程起到了事半而功倍的效用。据有关资料，从1877年船政派第一批留学生至今，全国先后派遣留学生已达100多万名，遍及世界100多个国家，造就了一批批中华民族精英。</p>
+                </div>
+            </div>
+
+            <!-- 改革创新 -->
+            <div class="chapter">
+                <div class="chapter-title">
+                    <span class="emoji">⚙️</span> 改革创新
+                </div>
+                <div class="chapter-content">
+                    <p>福建船政创办过程，在当时传统封建制度和封闭锁国思想禁锢下，来自各方面的阻力、压力、困难可想而知。船政创业者坚持改革创新，义无反顾。“以一篑为始基，从古天下无难事；致九译之新法，于今中国有圣人”，坚定自信，催人奋进。以新知识来教育学生，更派出大批优秀毕业生到西方汲取新知。注重实践，背离传统科举制度之道，使学生学以致用，成为有用之才。</p>
+                    <p>以“生死以之”的决心，知难而上，排除来自统治阶级内部及英、法列强等外部的种种非议、刁难、掣肘、阻挠、破坏，克服腐败的官僚体制、经费匮乏、缺乏经验等种种困难，使福建船政取得令世人瞩目的绩效。正如光绪元年左宗棠奉命议奏所陈：“中国轮船局分设闽、沪，闽局所设船、铁诸厂，华匠能以机器造机器，华人能通西法作船主，沪局所不如”。</p>
+                </div>
+            </div>
+
+            <!-- 学以致用 -->
+            <div class="chapter">
+                <div class="chapter-title">
+                    <span class="emoji">📚</span> 学以致用
+                </div>
+                <div class="chapter-content">
+                    <p>学习新法，注重理论联系实际，讲求实效。首先是重视新知育才，船政学堂先后开办制造（造船）、绘图（设计）、艺圃（技工）、驾驶、轮机、电讯等专业，形成比较完整的教育体系。学制造者学法文和造船需要的基础数学、物理、解析几何、微积分、机械学以及重学、水力学、材料力学、制造、制机等课程。学驾驶者学习英文和驾驶需要的算术、几何、代数、三角、航海天文、航海理论、地理、驾驶学、御风、测量、演放鱼雷等；学管轮者另授汽理、行船汽机、机器画法、机器实习、修定鱼雷等。艺圃是专门培养初级技术和管理人员的技工学校，艺徒半工半读，主要学习语文、算术、几何、机械作图等。</p>
+                    <p>同时，重视实践，如学驾驶者在理论学习三年后经考核转入练船，实践科目有航海术、炮术、指挥等航海技能。先后配置“福星”、“建威”、“扬武”号等练船专供学生实习，洋员教其驾驶，由海口、近洋而远洋，“凡水火之分度、礁沙之夷险、风信之征验、桅柁之将迎，皆令即所习闻者，印之实境，熟极巧生”。学用结合使船政学生基本掌握了制造、航海技术，因而在大批洋师匠如约回国后，船政“可不用洋匠而能造，不用洋人而能驾”。</p>
+                </div>
+            </div>
+
+            <!-- 追求卓越 -->
+            <div class="chapter">
+                <div class="chapter-title">
+                    <span class="emoji">⭐</span> 追求卓越
+                </div>
+                <div class="chapter-content">
+                    <p>以育才为例，主要包括：（1）精选生员。每次招生采用“广报精收”的办法，考选十分严格。（2）严选教师。学堂开办初期“延致熟习中外语言、文学洋师”，请了不少外籍语言、专业教师。1879年后逐渐改由最优秀的留学生如严复、郑清濂、魏瀚等担任。要求为师者不单在课堂上“授道解惑”，更在思想的品德、志向、学问、作风、仪表、体魄、奉献等诸方面作出好榜样。（3）严正风纪。对学生思想教育抓得很紧，管理极严。学生稍有违规，小则记过，大者斥革；每三月一考，成绩一等赏银，三等记惰，两次三等责戒，三次斥出，学员淘汰率极高。（4）理论教学与实践操作锻炼相结合。对实习课的要求也十分严格。</p>
+                    <p>因此，船政学堂生员勤奋学习、刻苦钻研蔚为风气。一位参观过船政学堂的法国工程师赞叹：“他们把敏捷的思维、坚韧不拔的精神、永远渴望成功的思想，全都用在学习上，这体现了中国人的特点”。即使到了国外留学也依然如此。如1877年首批12名留英海军生，留学三年全都成绩良好，令外国士官生吃惊。结业评结中：严宗光（严复）“考试屡优”，蒋超英“造诣最深”，刘步蟾、林曾泰“成绩优异”，何心川、方伯谦、林永升、叶祖珪、萨镇冰“于行军布阵及一切战法无不谙练”，黄建勋、林颖启、江懋祉“专心学习”，1879年先后学成归国，服务海军建设。</p>
+                </div>
+            </div>
+
+            <!-- 爱国忘我 -->
+            <div class="chapter">
+                <div class="chapter-title">
+                    <span class="emoji">❤️</span> 爱国忘我
+                </div>
+                <div class="chapter-content">
+                    <p>这不仅表现在船政创业者恃“生死以之”精神开拓革新、艰苦创业，更表现在历次抗击外来侵略者战斗中以大无畏的爱国主义精神奋勇杀敌、视死如归。1874年沈葆桢亲率福建舰队赴台，在日军武装侵略面前以坚定的爱国精神与坚强的武装实力，逼贪得无厌的日侵略军退出台湾，保卫了中华民族的尊严并开始了台湾的近代化进程。</p>
+                    <p>1884年甲申中法海战，船政学生参战25人中捐躯18人；水师牺牲的6位舰长中有5位是船政学堂毕业的青年人；留学归来的船政学堂毕业生杨兆楠、薛有福、黄季良等一批参战青年也在战斗中献身。1894年甲午中日海战中船政学堂毕业生为国捐躯的不少，如邓世昌、林永升等管带（舰长）。值得一提的是甲午战败，清廷李鸿章等为寻觅可以为已脱罪卸责之说词，改写战报，捏造战情，罗织在前方浴血奋战之下属以代罪。这方面已有不少史实记载及研究资料为含冤者辩诬，“官书多妄，野史多诬”之说法可谓入木三分。</p>
+                    <p>1938年抗日战争在保卫武汉大会战中，中山舰（原名“永丰”）官兵与敌机奋战到底，16名将士壮烈殉国。舰长萨师俊在指挥台中弹，在自己腿被炸断、手臂重伤的情况下仍坚守岗位继续指挥，高呼：全舰官兵努力杀敌，誓与本舰共存亡！他们大义凛然、浩气长存，不愧为民族的脊梁，永远值得后人怀念。</p>
+                    <div class="insight-note">
+                        📅 1874年，日本侵略台湾。150年前的今天（1874年6月14日）—— 铭记历史，吾辈自强。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 当好表率 -->
+            <div class="chapter">
+                <div class="chapter-title">
+                    <span class="emoji">🏅</span> 当好表率
+                </div>
+                <div class="chapter-content">
+                    <p>福建船政的创办者尤其是首任船政大臣沈葆桢，精明干练，处事果断，以身作则，公正廉明，成为僚属的楷模。他的过人之处在于：（1）具有强烈的爱国心和责任感。处处表现以国家和民族的命运为重，坚定走民族开放和民族自强之路，没有顾及个人宠辱得失。（2）在艰难的环境中埋头苦干。务实开拓，有胆有识，奖惩严明。（3）严守中华传统美德，廉洁自律、光明磊落，令人景仰。</p>
+                    <p>左宗棠在后来致总理衙门书中称：“闽局之有成，赖幼丹（沈葆桢，字幼丹）中丞清强忠实，能得华洋之心，总司其上，而朴干之官绅员弁分效奔走于下”。语不惊人，却道出了领导者当好表率的十分重要作用。</p>
+                </div>
+            </div>
+
+            <!-- 结语 船政精神永续 -->
+            <div class="insight-note" style="margin-top: 2rem; background: rgba(0,0,0,0.5);">
+                🌟 船政文化，不仅是中国近代工业的起点，更是一种自强不息、开放包容、务实创新的民族精神。今日回望，依然熠熠生辉，指引我们奋勇前行。
+            </div>
+
+            <div class="footer-spirit">
+                <a href="index.html" class="btn-return">⚓ 返回首页 重温船政风华 ⛵</a>
+                <div style="margin-top: 1.5rem; font-size: 0.75rem; opacity: 0.7;">
+                    福建船政文化 · 精神财富 | 马尾 · 中国近代海军的摇篮
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 增添简单的进场淡入效果 和 背景圆点无交互干扰
+        console.log("船政精神财富页面 — 紫色圆点旋转背景，文化长卷已加载");
+        // 可选: 保持背景动效稳定，无需额外干涉
+        // 添加一个滚入时的微动画，让章节依次显现（优雅增强）
+        const chapters = document.querySelectorAll('.chapter');
+        if (chapters.length) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            chapters.forEach(ch => {
+                ch.style.opacity = '0';
+                ch.style.transform = 'translateY(20px)';
+                ch.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(ch);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>福建船政文化 | 百年船政 · 薪火相传</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: #0a0a2a;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Orbitron', 'Arial', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+        }
+
+        .page-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .dynamic-bg::before {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="0.9"/></svg>');
+            background-size: 90px 90px;
+            background-repeat: repeat;
+            animation: floatSlow 32s linear infinite;
+            pointer-events: none;
+        }
+
+        .dynamic-bg::after {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.6"/></svg>');
+            background-size: 110px 110px;
+            background-repeat: repeat;
+            animation: floatReverse 40s linear infinite reverse;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .dynamic-bg .aura-overlay {
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            background: radial-gradient(circle at 30% 40%, rgba(120, 80, 200, 0.25), transparent 60%),
+                        repeating-radial-gradient(circle at 70% 60%, rgba(200, 130, 255, 0.1), transparent 80px);
+            filter: blur(65px);
+            mix-blend-mode: screen;
+            animation: slowRotate 34s infinite reverse linear;
+            pointer-events: none;
+        }
+
+        .dynamic-bg .grid-enhance {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px), repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px);
+            pointer-events: none;
+            animation: subtleShift 24s linear infinite;
+        }
+
+        @keyframes floatSlow {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-120px, -120px) rotate(360deg); }
+        }
+        @keyframes floatReverse {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(80px, 80px) rotate(360deg); }
+        }
+        @keyframes slowRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes subtleShift {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .hero {
+            background: transparent;
+            backdrop-filter: none;
+            border-radius: 2rem;
+            padding: 2.5rem 3rem;
+            max-width: 1000px;
+            width: 100%;
+            border: 1px solid rgba(200, 180, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 10px rgba(138, 90, 210, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.2s ease;
+            will-change: transform;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .hero:hover {
+            border-color: rgba(210, 170, 255, 0.7);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+                        0 0 0 1px rgba(210, 170, 255, 0.3),
+                        0 0 20px rgba(138, 90, 210, 0.8),
+                        0 0 35px rgba(100, 180, 255, 0.4);
+        }
+
+        .hero:hover::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: radial-gradient(circle at 30% 40%, rgba(210, 170, 255, 0.2), transparent 70%);
+            border-radius: 2rem;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.6;
+            filter: blur(12px);
+        }
+
+        .animate-line {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        .animate-line.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .title-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        .anchor-left, .anchor-right {
+            font-size: 2.8rem;
+            display: inline-block;
+            color: #ffffff;
+            text-shadow: 0 0 12px rgba(255, 255, 255, 0.8), 0 0 25px rgba(0, 191, 255, 0.5);
+            transition: transform 0.3s ease, text-shadow 0.3s ease;
+            line-height: 1;
+        }
+
+        .chuanzheng-title {
+            font-size: clamp(2rem, 8vw, 3.8rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFFFFF 0%, #FFF5E0 40%, #FFFAF0 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: 0.02em;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5), 0 2px 10px rgba(0, 0, 0, 0.2);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 640px) {
+            .anchor-left, .anchor-right { font-size: 2rem; }
+            .title-wrapper { gap: 0.8rem; }
+            .hero { padding: 1.5rem; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            color: rgba(245, 235, 255, 0.95);
+            border-bottom: 1px dashed rgba(210, 170, 255, 0.7);
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+
+        .desc {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: #f5eeff;
+            font-weight: 400;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 1rem;
+            padding: 1rem;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        /* 四个主标签样式 - 排成一行 */
+        .tech-badge {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge {
+            background: rgba(15, 10, 30, 0.55);
+            backdrop-filter: blur(4px);
+            padding: 0.7rem 1.2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-left: 2px solid #c79aff;
+            border-right: 2px solid #c79aff;
+            transition: all 0.2s;
+            color: #f0e6ff;
+            text-decoration: none;
+            display: inline-block;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .badge:hover {
+            background: rgba(118, 75, 162, 0.7);
+            box-shadow: 0 0 15px rgba(180, 130, 255, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .spirit-link {
+            color: #FFD966;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border-bottom: 1px dashed #FFD966;
+            cursor: pointer;
+        }
+        .spirit-link:hover {
+            color: #FFB347;
+            text-shadow: 0 0 8px rgba(255, 180, 71, 0.5);
+            border-bottom-color: #FFB347;
+        }
+
+        /* 按钮组已删除 */
+        .button-group {
+            display: none;
+        }
+
+        .footer-note {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            background: rgba(0,0,0,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            backdrop-filter: blur(2px);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero { animation: fadeUp 1.2s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+
+        /* 响应式：屏幕过小时允许换行 */
+        @media (max-width: 700px) {
+            .tech-badge {
+                flex-wrap: wrap;
+                gap: 0.8rem;
+            }
+            .badge {
+                font-size: 0.85rem;
+                padding: 0.5rem 1rem;
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .badge {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        ::-webkit-scrollbar { width: 6px; background: #1a0f2a; }
+        ::-webkit-scrollbar-thumb { background: #9f7eff; border-radius: 6px; }
+        ::selection { background: #9f7eff; color: #0a0a2a; }
+    </style>
+</head>
+<body>
+
+    <div class="dynamic-bg">
+        <div class="aura-overlay"></div>
+        <div class="grid-enhance"></div>
+    </div>
+
+    <div class="page-container">
+        <div class="hero" id="tiltCard">
+            <div class="animate-line" id="line1">
+                <div class="title-wrapper">
+                    <span class="anchor-left">⚓</span>
+                    <h1 class="chuanzheng-title">✦ 福建船政 ✦</h1>
+                    <span class="anchor-right">⛵</span>
+                </div>
+            </div>
+            <div class="animate-line" id="line2">
+                <div class="subtitle">船政文化 · 百年薪火 · 向海图强</div>
+            </div>
+            <div class="animate-line" id="line3">
+                <div class="desc">
+                    福建船政，中国近代工业与海军的肇始之地，承载着中华民族向海图强的梦想。<br>
+                    从马尾船政局的创立到如今的文化传承，百年船政精神薪火相传，激励一代代中华儿女开拓进取。
+                </div>
+            </div>
+            <div class="animate-line" id="line4">
+                <div class="tech-badge">
+                    <span class="badge"><a href="modern-shipbuilding.html" class="spirit-link">⚓ 现代船政</a></span>
+                    <span class="badge"><a href="author-malu.html" class="spirit-link">📜 作者马旅</a></span>
+                    <span class="badge"><a href="spirit.html" class="spirit-link">✨ 精神财富</a></span>
+                    <span class="badge"><a href="mawei-memory.html" class="spirit-link">🏛️ 马尾记忆</a></span>
+                </div>
+            </div>
+            <div class="animate-line" id="line6">
+                <div class="desc" style="font-size: 0.75rem; margin-top: 1rem; opacity: 0.9; background: rgba(0,0,0,0.3);">
+                    * 1866年左宗棠创立马尾船政 · 中国近代海军摇篮 · 船政精神永续流传
+                </div>
+            </div>
+        </div>
+        <div class="animate-line footer-note" id="line7">
+            🛶 福建船政文化 | 千年闽都 · 船政风华 | 科技赋能文化传承
+        </div>
+    </div>
+
+    <!-- AI小助手 -->
+    <link rel="stylesheet" href="ai-chatbot.css">
+    <script src="ai-chatbot.js"></script>
+
+    <script>
+        const lines = [
+            { id: 'line1', delay: 0 },
+            { id: 'line2', delay: 300 },
+            { id: 'line3', delay: 600 },
+            { id: 'line4', delay: 900 },
+            { id: 'line6', delay: 900 },
+            { id: 'line7', delay: 900 }
+        ];
+        
+        function startTextAnimation() {
+            lines.forEach(item => {
+                const element = document.getElementById(item.id);
+                if (element) {
+                    setTimeout(() => element.classList.add('visible'), item.delay);
+                }
+            });
+        }
+        
+        let animationStarted = false;
+        function initTextAnimation() {
+            if (animationStarted) return;
+            animationStarted = true;
+            startTextAnimation();
+        }
+        
+        function resetTextAnimation() {
+            lines.forEach(item => {
+                const element = document.getElementById(item.id);
+                if (element) element.classList.remove('visible');
+            });
+            setTimeout(() => {
+                lines.forEach(item => {
+                    const element = document.getElementById(item.id);
+                    if (element) {
+                        setTimeout(() => element.classList.add('visible'), item.delay);
+                    }
+                });
+            }, 50);
+        }
+        
+        const card = document.getElementById('tiltCard');
+        let bounds = null;
+        const MAX_TILT = 11;
+        const perspective = 1200;
+        
+        function updateBounds() { if (card) bounds = card.getBoundingClientRect(); }
+        
+        function handleMouseMove(e) {
+            if (!card || !bounds) return;
+            const mouseX = e.clientX - bounds.left;
+            const mouseY = e.clientY - bounds.top;
+            const centerX = bounds.width / 2;
+            const centerY = bounds.height / 2;
+            let normX = (mouseX - centerX) / centerX;
+            let normY = (mouseY - centerY) / centerY;
+            const clampedX = Math.min(Math.max(normX, -1), 1);
+            const clampedY = Math.min(Math.max(normY, -1), 1);
+            const rotateY = clampedX * MAX_TILT;
+            const rotateX = clampedY * -MAX_TILT;
+            card.style.transform = `perspective(${perspective}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(8px)`;
+        }
+        
+        function handleMouseLeave() { if (card) card.style.transform = ''; }
+        function handleResize() { updateBounds(); }
+        
+        if (card) {
+            updateBounds();
+            window.addEventListener('resize', handleResize);
+            card.addEventListener('mousemove', handleMouseMove);
+            card.addEventListener('mouseleave', handleMouseLeave);
+        }
+        
+        let pulseTimeout = null, addedStyle = null;
+        
+        function applyPulseAcceleration() {
+            if (addedStyle) addedStyle.remove();
+            addedStyle = document.createElement('style');
+            addedStyle.innerHTML = `.dynamic-bg::before { animation: floatSlow 18s linear infinite !important; }`;
+            document.head.appendChild(addedStyle);
+            if (pulseTimeout) clearTimeout(pulseTimeout);
+            pulseTimeout = setTimeout(() => { if (addedStyle) addedStyle.remove(); }, 700);
+        }
+        
+        if ('ontouchstart' in window && card) {
+            card.removeEventListener('mousemove', handleMouseMove);
+            card.removeEventListener('mouseleave', handleMouseLeave);
+        }
+        
+        initTextAnimation();
+    </script>
+</body>
+</html>

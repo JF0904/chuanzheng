@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>历史名人 · 船政学堂群星</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: #0a0a2a;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Noto Serif SC', 'Georgia', serif;
+        }
+        .page-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+        }
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+        .dynamic-bg::before {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="0.9"/></svg>');
+            background-size: 90px 90px;
+            background-repeat: repeat;
+            animation: floatSlow 32s linear infinite;
+            pointer-events: none;
+        }
+        .dynamic-bg::after {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.6"/></svg>');
+            background-size: 110px 110px;
+            background-repeat: repeat;
+            animation: floatReverse 40s linear infinite reverse;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .dynamic-bg .aura-overlay {
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            background: radial-gradient(circle at 30% 40%, rgba(120, 80, 200, 0.25), transparent 60%),
+                        repeating-radial-gradient(circle at 70% 60%, rgba(200, 130, 255, 0.1), transparent 80px);
+            filter: blur(65px);
+            mix-blend-mode: screen;
+            animation: slowRotate 34s infinite reverse linear;
+            pointer-events: none;
+        }
+        .dynamic-bg .grid-enhance {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px), repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px);
+            pointer-events: none;
+            animation: subtleShift 24s linear infinite;
+        }
+        @keyframes floatSlow {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-120px, -120px) rotate(360deg); }
+        }
+        @keyframes floatReverse {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(80px, 80px) rotate(360deg); }
+        }
+        @keyframes slowRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes subtleShift {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .content-card {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            border: 1px solid rgba(200, 180, 255, 0.5);
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(210, 170, 255, 0.5);
+            padding-bottom: 1rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #FFD966;
+            text-decoration: none;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 217, 102, 0.5);
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+        }
+        .back-link:hover {
+            background: rgba(255, 217, 102, 0.2);
+            transform: translateY(-2px);
+        }
+        .spirit-title {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFE6B0, #FFD966, #FFB347);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .section {
+            margin-bottom: 2rem;
+            background: rgba(30, 25, 55, 0.6);
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            border: 1px solid rgba(210, 170, 255, 0.3);
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FFE6B0;
+            margin-bottom: 0.3rem;
+            border-left: 4px solid #FFD966;
+            padding-left: 1rem;
+        }
+        .section-sub {
+            font-size: 0.85rem;
+            color: #bcb0e6;
+            margin-bottom: 1.2rem;
+            padding-left: 1rem;
+        }
+        .person-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.8rem;
+        }
+        .person-item {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.5rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            color: #e0d6ff;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .person-item:hover {
+            background: rgba(255, 217, 102, 0.2);
+            transform: translateX(3px);
+            color: #FFE6B0;
+        }
+        .intro-text {
+            color: #cbc3f0;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            padding: 0.5rem;
+        }
+        @media (max-width: 640px) {
+            .person-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+            .section-title { font-size: 1.2rem; }
+            .content-card { padding: 1rem; }
+        }
+    </style>
+</head>
+<!-- AI小助手样式和脚本 -->
+<link rel="stylesheet" href="ai-chatbot.css">
+<script src="ai-chatbot.js"></script>
+<body>
+    <div class="dynamic-bg"><div class="aura-overlay"></div><div class="grid-enhance"></div></div>
+    <div class="page-container">
+        <div class="content-card">
+            <div class="page-header">
+                <a href="mawei-memory.html" class="back-link">← 返回马尾记忆</a>
+                <h1 class="spirit-title">🎓 历史名人 · 船政学堂群星</h1>
+                <div style="font-size:0.85rem; color:#bcb0e6; margin-top:0.3rem;">中国近代海军与工业的璀璨群星</div>
+            </div>
+
+            <!-- 前学堂：制造班 -->
+            <div class="section">
+                <div class="section-title">🏭 前学堂 · 制造班</div>
+                <div class="section-sub">造船工程、机械设计、工业先驱</div>
+                <div class="intro-text">前学堂以培养造船工程师为目标，学法文及西方先进制造技术。毕业生成为中国近代造船、铁路、机械工业的奠基人。</div>
+                <div class="person-grid">
+                    <div class="person-item">魏翰</div>
+                    <div class="person-item">陈兆翱</div>
+                    <div class="person-item">郑清濂</div>
+                    <div class="person-item">吴德章</div>
+                    <div class="person-item">李寿田</div>
+                    <div class="person-item">杨廉臣</div>
+                    <div class="person-item">罗臻禄</div>
+                    <div class="person-item">池贞铨</div>
+                    <div class="person-item">林怡游</div>
+                    <div class="person-item">陈林璋</div>
+                </div>
+                <div style="margin-top:0.8rem; font-size:0.8rem; color:#9a8fcc; text-align:center;">—— 近代工业火种的播撒者 ——</div>
+            </div>
+
+            <!-- 后学堂：驾驶班 -->
+            <div class="section">
+                <div class="section-title">⚓ 后学堂 · 驾驶班</div>
+                <div class="section-sub">海军将领、舰队指挥官、民族英雄</div>
+                <div class="intro-text">驾驶班培养了中国近代第一批海军军官，他们多数在甲申、甲午海战中英勇抗敌，写下可歌可泣的篇章。</div>
+                <div class="person-grid">
+                    <div class="person-item">刘步蟾</div>
+                    <div class="person-item">邓世昌</div>
+                    <div class="person-item">林永升</div>
+                    <div class="person-item">林泰曾</div>
+                    <div class="person-item">叶祖珪</div>
+                    <div class="person-item">萨镇冰</div>
+                    <div class="person-item">方伯谦</div>
+                    <div class="person-item">黄建勋</div>
+                    <div class="person-item">邱宝仁</div>
+                    <div class="person-item">李和</div>
+                </div>
+                <div style="margin-top:0.8rem; font-size:0.8rem; color:#9a8fcc; text-align:center;">—— 海疆卫士 · 铁血忠魂 ——</div>
+            </div>
+
+            <!-- 后学堂：管轮班 + 其他杰出人物 -->
+            <div class="section">
+                <div class="section-title">⚙️ 后学堂 · 管轮班 & 其他翘楚</div>
+                <div class="section-sub">轮机工程、外交思想、铁路先驱</div>
+                <div class="intro-text">管轮班负责舰船动力维护，同时船政还走出了思想家、翻译家、铁路工程师等跨领域英才。</div>
+                <div class="person-grid">
+                    <div class="person-item">严复</div>
+                    <div class="person-item">詹天佑</div>
+                    <div class="person-item">罗丰禄</div>
+                    <div class="person-item">陈季同</div>
+                    <div class="person-item">陈兆锵</div>
+                    <div class="person-item">王寿昌</div>
+                    <div class="person-item">高而谦</div>
+                    <div class="person-item">魏瀚</div>
+                </div>
+            </div>
+
+            <!-- 精神传承 -->
+            <div style="margin-top:1.5rem; padding:1rem; background:rgba(0,0,0,0.4); border-radius:1rem; text-align:center; color: #ffffff;">
+                🌟 船政学堂不仅是中国近代海军的摇篮，更培养了无数推动中国近代化的先驱。<br>
+                他们以“爱国、科学、创新、图强”的船政精神，照亮了一个时代的天空。
+            </div>
+        </div>
+    </div>
+    <script> console.log("历史名人页面已加载"); </script>
+</body>
+</html>

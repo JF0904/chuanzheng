@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>现代船政 · 船政文化的当代传承</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: #0a0a2a;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Noto Serif SC', 'Georgia', serif;
+        }
+        .page-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1.5rem;
+        }
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+        .dynamic-bg::before {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="0.9"/></svg>');
+            background-size: 90px 90px;
+            background-repeat: repeat;
+            animation: floatSlow 32s linear infinite;
+            pointer-events: none;
+        }
+        .dynamic-bg::after {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.6"/></svg>');
+            background-size: 110px 110px;
+            background-repeat: repeat;
+            animation: floatReverse 40s linear infinite reverse;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .dynamic-bg .aura-overlay {
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            background: radial-gradient(circle at 30% 40%, rgba(120, 80, 200, 0.25), transparent 60%),
+                        repeating-radial-gradient(circle at 70% 60%, rgba(200, 130, 255, 0.1), transparent 80px);
+            filter: blur(65px);
+            mix-blend-mode: screen;
+            animation: slowRotate 34s infinite reverse linear;
+            pointer-events: none;
+        }
+        .dynamic-bg .grid-enhance {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px), repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px);
+            pointer-events: none;
+            animation: subtleShift 24s linear infinite;
+        }
+        @keyframes floatSlow {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-120px, -120px) rotate(360deg); }
+        }
+        @keyframes floatReverse {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(80px, 80px) rotate(360deg); }
+        }
+        @keyframes slowRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes subtleShift {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .content-card {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 2rem;
+            max-width: 1300px;
+            width: 100%;
+            border: 1px solid rgba(200, 180, 255, 0.5);
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(210, 170, 255, 0.5);
+            padding-bottom: 1rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #FFD966;
+            text-decoration: none;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 217, 102, 0.5);
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+        }
+        .back-link:hover {
+            background: rgba(255, 217, 102, 0.2);
+            transform: translateY(-2px);
+        }
+        .page-title {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFE6B0, #FFD966, #FFB347);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .subhead {
+            font-size: 0.9rem;
+            color: #bcb0e6;
+            margin-top: 0.3rem;
+        }
+
+        /* 模块样式 */
+        .module {
+            margin-bottom: 3rem;
+            background: rgba(30, 25, 55, 0.5);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(210, 170, 255, 0.3);
+        }
+        .module-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #FFE6B0;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid #FFD966;
+            padding-left: 1rem;
+        }
+        .module-desc {
+            font-size: 0.9rem;
+            color: #cbc3f0;
+            margin-bottom: 1.2rem;
+            padding-left: 1rem;
+        }
+
+        /* 卡片网格 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin-top: 0.5rem;
+        }
+        .info-card {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 1rem;
+            padding: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(200, 180, 255, 0.3);
+        }
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: #FFD966;
+            box-shadow: 0 0 15px rgba(255, 217, 102, 0.2);
+        }
+        .card-img {
+            width: 100%;
+            height: 160px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #bcb0e6;
+            font-size: 0.8rem;
+            border: 1px dashed rgba(255, 217, 102, 0.4);
+            margin-bottom: 0.8rem;
+        }
+        .card-img img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 0.8rem;
+            object-fit: cover;
+        }
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #FFE6B0;
+            margin-bottom: 0.3rem;
+        }
+        .card-info {
+            font-size: 0.8rem;
+            color: #bcb0e6;
+            margin-bottom: 0.5rem;
+        }
+        .card-text {
+            font-size: 0.85rem;
+            color: #e0d6ff;
+            line-height: 1.4;
+        }
+
+        /* 时间线样式 */
+        .timeline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        .timeline-node {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem 1.5rem;
+            border-radius: 2rem;
+            text-align: center;
+            min-width: 120px;
+        }
+        .timeline-year {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #FFD966;
+        }
+        .timeline-text {
+            font-size: 0.8rem;
+            color: #bcb0e6;
+        }
+        .timeline-arrow {
+            font-size: 1.5rem;
+            color: #FFD966;
+        }
+
+        @media (max-width: 640px) {
+            .card-grid { grid-template-columns: 1fr; }
+            .module-title { font-size: 1.3rem; }
+            .content-card { padding: 1rem; }
+            .timeline-node { padding: 0.5rem 1rem; min-width: 90px; }
+            .timeline-year { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dynamic-bg"><div class="aura-overlay"></div><div class="grid-enhance"></div></div>
+    <div class="page-container">
+        <div class="content-card">
+            <div class="page-header">
+                <a href="index.html" class="back-link">← 返回首页</a>
+                <h1 class="page-title">⚓ 现代船政 · 船政文化的当代传承</h1>
+                <div class="subhead">从历史中走来，在新时代绽放 | 遗址保护 · 文化旅游 · 科技传承 · 文化传播</div>
+            </div>
+
+            <!-- 模块一：船政遗址保护与开发 -->
+            <div class="module">
+                <div class="module-title">🏛️ 一、船政遗址保护与开发</div>
+                <div class="module-desc">百年船政遗迹，今日重焕光彩</div>
+                <div class="card-grid">
+                    <div class="info-card">
+                        <div class="card-img"><img src="照片素材/sucai-wenhuacheng.jpg">;</div>
+                        <div class="card-title">船政文化城</div>
+                        <div class="card-info">马尾 · 核心遗址区</div>
+                        <div class="card-text">中国船政文化核心区域，集遗址保护、文化展示、旅游休闲于一体。</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-img"><img src="照片素材/sucai-yamen.jpg"></div>
+                        <div class="card-title">船政衙门</div>
+                        <div class="card-info">总理船政办公地 · 已修复</div>
+                        <div class="card-text">沈葆桢等船政大臣办公场所，见证船政历史的重要建筑。</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-img"><img src="照片素材/sucai-huishiyuan.jpg"></div>
+                        <div class="card-title">绘事院</div>
+                        <div class="card-info">船政设计所 · 清代建筑</div>
+                        <div class="card-text">当时的设计绘图部门，现为船政文化重要展示点。</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-img"><img src="照片素材/sucai-huishiyuan.jpg"></div>
+                        <div class="card-title">船政学堂</div>
+                        <div class="card-info">中国近代海军摇篮</div>
+                        <div class="card-text">培养出严复、邓世昌、詹天佑等一代英才的学堂遗址。</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-img"><img src="照片素材/luoxingta.jpg"></div>
+                        <div class="card-title">罗星塔</div>
+                        <div class="card-info">马尾地标 · 中国塔</div>
+                        <div class="card-text">闽江门户灯塔，船政历史的见证者，世界航海图上的重要标志。</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-img"><img src="照片素材/zhaozhongci.jpg"></div>
+                        <div class="card-title">昭忠祠</div>
+                        <div class="card-info">中法海战纪念祠</div>
+                        <div class="card-text">纪念甲申中法海战牺牲将士，爱国主义教育基地。</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 模块二：船政文化旅游 -->
+            <div class="module">
+                <div class="module-title">🎫 二、船政文化旅游</div>
+                <div class="module-desc">走进马尾，感受船政文化的魅力</div>
+                <div class="card-grid">
+                    <div class="info-card">
+                        <div class="card-img"><img src="照片素材/museum.jpg"></div>
+                        <div class="card-title">中国船政文化博物馆</div>
+                        <div class="card-info">开放时间：9:00-17:00（周一闭馆）</div>
+                        <div class="card-text">全面展示福建船政的历史、文化和成就，是国内唯一以船政为主题的博物馆。</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-img"><img src="照片素材/scenic.jpg"></div>
+                        <div class="card-title">马尾船政文化景区</div>
+                        <div class="card-info">国家4A级景区 · 全年开放</div>
+                        <div class="card-text">串联船政衙门、学堂、博物馆等遗址，感受百年船政的恢弘气度。</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-img"><img src="照片素材/exhibition.jpg"></div>
+                        <div class="card-title">船政主题展览</div>
+                        <div class="card-info">定期举办 · 免费参观</div>
+                        <div class="card-text">展示船政造船模型、历史文献、海军装备等珍贵文物。</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-img"><img src="照片素材/study.jpg"></div>
+                        <div class="card-title">船政研学活动</div>
+                        <div class="card-info">中小学生研学基地</div>
+                        <div class="card-text">通过沉浸式体验，让学生了解船政历史和爱国主义精神。</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 模块三：船政科技传承 -->
+            <div class="module">
+                <div class="module-title">⚙️ 三、船政科技传承</div>
+                <div class="module-desc">从马尾造船厂到现代海洋强国</div>
+                <div class="timeline">
+                    <div class="timeline-node">
+                        <div class="timeline-year">1866</div>
+                        <div class="timeline-text">福建船政局创立</div>
+                    </div>
+                    <div class="timeline-arrow">→</div>
+                    <div class="timeline-node">
+                        <div class="timeline-year">现代</div>
+                        <div class="timeline-text">中国船舶工业</div>
+                    </div>
+                    <div class="timeline-arrow">→</div>
+                    <div class="timeline-node">
+                        <div class="timeline-year">未来</div>
+                        <div class="timeline-text">海洋科技强国</div>
+                    </div>
+                </div>
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.3); border-radius: 1rem;">
+                    <p style="color: #e0d6ff; line-height: 1.6;">船政培养的第一批造船、航海人才，成为中国近代工业的奠基人。他们的技术和精神传承至今，深刻影响了中国船舶工业、海军建设和海洋科技的发展。</p>
+                    <p style="color: #bcb0e6; margin-top: 0.5rem;">从马尾造船厂到江南造船，从近海防御到远海护卫，船政精神始终激励着中国向海图强。</p>
+                </div>
+            </div>
+
+            <!-- 模块四：船政文化传播 -->
+            <div class="module">
+                <div class="module-title">📺 四、船政文化传播</div>
+                <div class="module-desc">让船政精神在新时代持续发光</div>
+                <div class="card-grid">
+                    <div class="info-card">
+                        <div class="card-img"><img src="照片素材/jilupian.png"></div>
+                        <div class="card-title">纪录片《船政学堂》</div>
+                        <div class="card-info">CCTV热播 · 豆瓣高分</div>
+                        <div class="card-text">系统讲述船政学堂的历史和培养出的杰出人才。</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-img"><img src="照片素材/festival.jpg"></div>
+                        <div class="card-title">船政文化节</div>
+                        <div class="card-info">每年举办 · 马尾</div>
+                        <div class="card-text">通过展览、讲座、演出等形式传播船政文化。</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-img"><img src="照片素材/forum.jpg"></div>
+                        <div class="card-title">船政讲坛</div>
+                        <div class="card-info">学术交流平台</div>
+                        <div class="card-text">邀请专家学者分享船政研究成果，推动学术传播。</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-img"><img src="照片素材/shuji.png"></div>
+                        <div class="card-title">船政学术研究</div>
+                        <div class="card-info">专著 · 论文 · 档案整理</div>
+                        <div class="card-text">持续深入的学术研究，让船政历史更加清晰完整。</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 结语 -->
+            <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.4); border-radius: 1rem; text-align: center;">
+                <p style="color: #FFE6B0;">🌟 船政不仅属于历史，更活在当下，连接着未来 🌟</p>
+                <p style="color: #bcb0e6; font-size: 0.8rem; margin-top: 0.5rem;">从1866到2026，船政精神薪火相传，在新时代焕发新的生机与活力。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI小助手 -->
+    <link rel="stylesheet" href="ai-chatbot.css">
+    <script src="ai-chatbot.js"></script>
+    <script>console.log("现代船政页面已加载");</script>
+</body>
+</html>

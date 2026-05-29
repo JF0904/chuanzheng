@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>毕业名录 · 马尾船政学堂</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: #0a0a2a;
+            overflow-x: auto;
+            font-family: 'Segoe UI', 'Poppins', 'Noto Serif SC', 'Georgia', serif;
+        }
+        .page-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+        .dynamic-bg::before {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="0.9"/></svg>');
+            background-size: 90px 90px;
+            background-repeat: repeat;
+            animation: floatSlow 32s linear infinite;
+            pointer-events: none;
+        }
+        .dynamic-bg::after {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.6"/></svg>');
+            background-size: 110px 110px;
+            background-repeat: repeat;
+            animation: floatReverse 40s linear infinite reverse;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .dynamic-bg .aura-overlay {
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            background: radial-gradient(circle at 30% 40%, rgba(120, 80, 200, 0.25), transparent 60%),
+                        repeating-radial-gradient(circle at 70% 60%, rgba(200, 130, 255, 0.1), transparent 80px);
+            filter: blur(65px);
+            mix-blend-mode: screen;
+            animation: slowRotate 34s infinite reverse linear;
+            pointer-events: none;
+        }
+        .dynamic-bg .grid-enhance {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px), repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px);
+            pointer-events: none;
+            animation: subtleShift 24s linear infinite;
+        }
+        @keyframes floatSlow {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-120px, -120px) rotate(360deg); }
+        }
+        @keyframes floatReverse {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(80px, 80px) rotate(360deg); }
+        }
+        @keyframes slowRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes subtleShift {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .content-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 2rem;
+            max-width: 1300px;
+            width: 100%;
+            border: 1px solid rgba(200, 180, 255, 0.5);
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(210, 170, 255, 0.5);
+            padding-bottom: 1rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #FFD966;
+            text-decoration: none;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 217, 102, 0.5);
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+        }
+        .back-link:hover {
+            background: rgba(255, 217, 102, 0.2);
+            transform: translateY(-2px);
+        }
+        .spirit-title {
+            font-size: clamp(1.6rem, 5vw, 2.3rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFE6B0, #FFD966, #FFB347);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .class-section {
+            margin-bottom: 2rem;
+            background: rgba(20, 15, 45, 0.6);
+            border-radius: 1.2rem;
+            padding: 1.2rem;
+            border: 1px solid rgba(210, 170, 255, 0.3);
+        }
+        .class-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #FFD966;
+            margin-bottom: 0.3rem;
+            border-left: 4px solid #FFB347;
+            padding-left: 0.8rem;
+        }
+        .class-sub {
+            font-size: 0.8rem;
+            color: #bcb0e6;
+            margin-bottom: 1rem;
+            padding-left: 1rem;
+        }
+        .name-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 0.5rem;
+        }
+        .name-item {
+            font-size: 0.85rem;
+            color: #e0d6ff;
+            padding: 0.2rem 0.4rem;
+            border-bottom: 1px dashed rgba(255, 217, 102, 0.2);
+        }
+        @media (max-width: 768px) {
+            .name-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+            .class-title { font-size: 1.1rem; }
+            .content-card { padding: 1rem; }
+        }
+    </style>
+</head>
+<!-- AI小助手样式和脚本 -->
+<link rel="stylesheet" href="ai-chatbot.css">
+<script src="ai-chatbot.js"></script>
+<body>
+    <div class="dynamic-bg"><div class="aura-overlay"></div><div class="grid-enhance"></div></div>
+    <div class="page-container">
+        <div class="content-card">
+            <div class="page-header">
+                <a href="mawei-memory.html" class="back-link">← 返回马尾记忆</a>
+                <h1 class="spirit-title">📜 毕业名录 · 马尾前后学堂</h1>
+                <div style="font-size:0.8rem; color:#bcb0e6;">制造班 · 驾驶班 · 管轮班 | 历届先贤名录</div>
+            </div>
+
+            <!-- 前学堂制造班 -->
+            <div class="class-section">
+                <div class="class-title">🏭 前学堂 · 制造班</div>
+                <div class="class-sub">共八届 · 一百七十八名</div>
+                <div class="name-grid" id="manufacture-list"></div>
+            </div>
+
+            <!-- 后学堂驾驶班 -->
+            <div class="class-section">
+                <div class="class-title">⚓ 后学堂 · 驾驶班</div>
+                <div class="class-sub">共十九届 · 二百四十一名</div>
+                <div class="name-grid" id="sailing-list"></div>
+            </div>
+
+            <!-- 后学堂管轮班 -->
+            <div class="class-section">
+                <div class="class-title">⚙️ 后学堂 · 管轮班</div>
+                <div class="class-sub">共十四届 · 二百一十名</div>
+                <div class="name-grid" id="engine-list"></div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center; font-size:0.7rem; color:#9a8fcc;">—— 船政精神 · 薪火相传 ——</div>
+        </div>
+    </div>
+    <script>
+        // 制造班名录（第一届至第八届）
+        const manufactureNames = [
+            "魏瀚", "陈兆翱", "郑清濂", "林怡游", "李寿田", "吴德章", "杨廉臣", "陈林璋", "罗臻禄", "池贞铨",
+            "林庆升", "梁炳年", "张金生", "林日章", "陈季同", "郑诚", "汪乔年", "游学诗", "林钟玑", "陈平国", "苏汝灼",
+            "王庆端", "李芳荣", "魏暹", "陈才鍴", "王福昌", "王回澜", "陈伯璋", "黄庭", "林鸣埙", "黄成观", "胡维鐈", "李联奎", "曾宗瀛", "林介圭", "陈功奎", "古之诚", "陈继成", "王新", "林桂昌", "叶锡三",
+            "王寿昌", "陈庆平", "高而谦", "游学楷", "陈长龄", "林藩", "李大受", "郑守箴", "林振峰", "卢守孟", "叶芗寅", "王维桢", "李寿萱", "王韶聪", "杨济成", "林志荣", "许寿仁", "柯鸿年", "葛绍绥",
+            "施恩孚", "林福贞", "黄德椿", "卢学孟", "曾仰东", "李译诗", "李寿川", "石琛", "陈振家", "胡有文", "林钟钦", "刘冠同", "许赞周", "陈锡周", "陈海瑞", "吴德潜", "丁平澜", "郑守钦", "魏子京", "王庆安", "陈兆翥", "孙庆芳", "高庄凯", "陈宝暄", "董廷瑞", "薛启昌", "陈心楷", "林蠡", "蒋树藩", "林蓬春", "林芬荣",
+            "许尚坚", "高开成", "林兆炳", "陈炳年", "董朝钰", "高讲", "方兆鼎", "郑以撰", "周文郁", "张发义", "姚绍鏐", "杨承襄", "周锡昌", "乐耀贤", "姚济川", "陈常棣", "黄步沄", "卢则贤", "陈伯成",
+            "李世中", "李孟实", "李向瀗", "沈靓扆", "沈靓宸", "萧宽", "郑镕宽", "郑秉谦", "王思斌", "陈锡龄", "陈挺元", "曾广昌", "杨葆谦", "陈贞海", "王鸿金", "张沁", "陈为干", "杨茂贞", "黄曾溶", "张大榕", "王宜汉", "苏方杰", "廖宗和", "贾勷", "林绍亨",
+            "周葆燊", "郑颖孚", "陈德湜", "林福臻", "苏宝崇", "王愫昌", "杨俶谦", "陈大龄",
+            "郭仲铮", "廖能容", "方尚德", "张功", "魏子琅", "张宝骐", "叶燕贻", "陈立庠", "郑义莹", "林家钺", "林铿然", "丁振棨", "何健", "阮兆鳌", "吴仲森", "吴奋图", "陈兆良", "杨齐洛", "陈世杰", "汪继泗", "郑寿彭", "姚英华", "金廷槐", "黄勋", "汪培元", "陈自奇", "柯文琪", "张士森", "蒋弼庄", "严文福", "李毓英", "王怀纲", "张宗渠", "何尔燧", "陈声芸"
+        ];
+
+        // 驾驶班（示例收录主要代表人物，完整版可扩展）
+        const sailingNames = [
+            "罗丰禄", "何心川", "蒋超英", "刘步蟾", "叶伯鋆", "方伯谦", "林同书", "郑文成", "林泰曾", "李达璋", "严复", "沈有恒", "邱宝仁", "陈毓淞", "林永升", "叶祖珪", "陈锦荣", "黄煊", "许寿山", "林承谟", "柴卓群", "郑溥泉", "黄建勋", "张成", "林国祥", "叶富", "吕翰", "黎家本", "邓世昌", "李田", "李和", "梁梓芳", "卓关略",
+            "萨镇冰", "叶琛", "邓聪保", "林颖启", "吴梦良", "陈锡三", "江懋三", "郑文郁", "陈文庆", "唐宸科", "林国裕", "卢华大", "卢鸿杰",
+            "林履中", "许济川", "林森林", "戴伯康", "陈英", "蓝建枢", "韦振声", "史建中",
+            "许兆箕", "杨则哲", "黄裳治", "陈伯涵", "林占熊", "唐佑", "邝聪", "丁兆中", "林文彬", "刘冠雄", "李鼎新", "陈兆艺", "黄伦苏", "曹廉正", "关景", "丁沁波", "陈善元", "罗熙禄", "何品璋", "王培成", "谢子勋", "陈兆麟", "梁祖勋", "谢润德", "何金胜", "吴松森",
+            "林帮光", "程璧光", "梁鸿春", "陈恩焘", "王涟", "张珍", "石文铭", "陈宗器", "丁澄澜",
+            "翁祖年", "刘容", "黄鸣球", "叶大俊", "郑文超", "翁守瑜", "张哲溁", "刘联芳", "沈叔龄", "陈应谦",
+            "温桂汉", "陈兆兰", "罗忠尧", "李国圻", "陈常绥", "叶琅", "陈大懿", "翁守恭", "陈福烘", "邱志范", "罗忠溶",
+            "陈钜庸", "詹天佑", "吴应科", "欧阳庚", "苏锐钊", "陆永泉", "杨兆楠", "邓咏钟", "徐振鹏", "容尚谦", "黄季良", "薛有福", "邓士聪", "吴其藻", "宋文翙", "邓桂廷",
+            "贾凝禧", "罗忠铭", "周献琛", "朱声冈", "高承锡", "郑文英", "林葆怿", "许赞虞", "曾瑞琪", "林韵珂", "林敬熥", "张秉奎", "陈怀羔"
+        ];
+
+        // 管轮班（示例收录）
+        const engineNames = [
+            "何朝先", "陆麟清", "郭成志", "卓关邦", "梁逸卿", "李阿富", "黎阿本", "陈景康", "黎晋骆", "李亚文", "林鹤龄", "杨进宝", "彭就胜", "张永清", "冯瑞金", "周荣贵", "陆三兴", "杨光", "余贞顺", "洪得意", "胡金元", "郑官合",
+            "庞铭世", "伍兆佳", "刘荫霖", "林泉", "区贤灿", "载庆涛", "罗荫皆", "陈兆锵", "陈如璧", "郭文进", "庞廷桢", "曾光时", "潘锡基", "刘昭亮", "郭乃安", "陈治安", "李福龄", "梁祖全", "郑守恒", "黎弼良", "马应波", "刘冠南", "王齐辰", "刘义宽", "何林英", "张玉明", "卢鸿彬", "叶大银", "梁祖群", "梁福藻", "黄显章",
+            "王桐", "张茂福", "黄履川", "胡尔楷", "刘善述", "陈鹤潭", "陈如衡",
+            "王考鸣", "吴保和", "刘康", "陈伯祥", "周敬让", "卢毓英", "张斌元", "任邦珍", "陈翼宸", "林亨豫", "梁季恺", "葛希颜", "沈念祖", "陈宝璋", "林朝鼎",
+            "潘琮璋", "林傅善", "郑华钟", "曾光世", "周文祺", "梁志柱", "洪光安", "王兆陶", "陈忠捷", "陈开镰"
+        ];
+
+        function renderList(containerId, names) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            names.forEach(name => {
+                const span = document.createElement('div');
+                span.className = 'name-item';
+                span.textContent = name;
+                container.appendChild(span);
+            });
+        }
+
+        renderList('manufacture-list', manufactureNames);
+        renderList('sailing-list', sailingNames);
+        renderList('engine-list', engineNames);
+    </script>
+</body>
+</html>

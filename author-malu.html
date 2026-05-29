@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>作者马旅 · 马尾船政文化探索之旅</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: #0a0a2a;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Noto Serif SC', 'Georgia', serif;
+        }
+        .page-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1.5rem;
+        }
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+        .dynamic-bg::before {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="0.9"/></svg>');
+            background-size: 90px 90px;
+            background-repeat: repeat;
+            animation: floatSlow 32s linear infinite;
+            pointer-events: none;
+        }
+        .dynamic-bg::after {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.6"/></svg>');
+            background-size: 110px 110px;
+            background-repeat: repeat;
+            animation: floatReverse 40s linear infinite reverse;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .dynamic-bg .aura-overlay {
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            background: radial-gradient(circle at 30% 40%, rgba(120, 80, 200, 0.25), transparent 60%),
+                        repeating-radial-gradient(circle at 70% 60%, rgba(200, 130, 255, 0.1), transparent 80px);
+            filter: blur(65px);
+            mix-blend-mode: screen;
+            animation: slowRotate 34s infinite reverse linear;
+            pointer-events: none;
+        }
+        .dynamic-bg .grid-enhance {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px), repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px);
+            pointer-events: none;
+            animation: subtleShift 24s linear infinite;
+        }
+        @keyframes floatSlow {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-120px, -120px) rotate(360deg); }
+        }
+        @keyframes floatReverse {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(80px, 80px) rotate(360deg); }
+        }
+        @keyframes slowRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes subtleShift {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .content-card {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 2rem;
+            max-width: 1100px;
+            width: 100%;
+            border: 1px solid rgba(200, 180, 255, 0.5);
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(210, 170, 255, 0.5);
+            padding-bottom: 1rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #FFD966;
+            text-decoration: none;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 217, 102, 0.5);
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+        }
+        .back-link:hover {
+            background: rgba(255, 217, 102, 0.2);
+            transform: translateY(-2px);
+        }
+        .page-title {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFE6B0, #FFD966, #FFB347);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .subhead {
+            font-size: 0.9rem;
+            color: #bcb0e6;
+            margin-top: 0.3rem;
+        }
+
+        /* 章节样式 */
+        .section {
+            margin-bottom: 2rem;
+            background: rgba(30, 25, 55, 0.5);
+            border-radius: 1.2rem;
+            padding: 1.2rem;
+            border: 1px solid rgba(210, 170, 255, 0.3);
+        }
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #FFE6B0;
+            margin-bottom: 0.8rem;
+            border-left: 4px solid #FFD966;
+            padding-left: 1rem;
+        }
+        .section-content {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #e0d6ff;
+            padding: 0 0.5rem;
+        }
+
+        /* 路线图样式 */
+        .route {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .route-item {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.8rem 1.5rem;
+            border-radius: 2rem;
+            width: 80%;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .route-item:hover {
+            background: rgba(255, 217, 102, 0.2);
+            transform: translateX(5px);
+        }
+        .route-name {
+            font-weight: bold;
+            color: #FFD966;
+        }
+        .route-desc {
+            font-size: 0.8rem;
+            color: #bcb0e6;
+        }
+        .route-arrow {
+            font-size: 1.2rem;
+            color: #FFD966;
+        }
+
+        /* 推荐卡片 */
+        .rec-card {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .rec-title {
+            font-weight: bold;
+            color: #FFD966;
+            margin-bottom: 0.3rem;
+        }
+        .rec-desc {
+            font-size: 0.85rem;
+            color: #bcb0e6;
+        }
+
+        .img-placeholder {
+            margin: 1rem 0;
+            background: rgba(0,0,0,0.4);
+            border-radius: 1rem;
+            padding: 0.8rem;
+            text-align: center;
+            border: 1px dashed rgba(255,217,102,0.5);
+            color: #FFE6B0;
+            font-size: 0.85rem;
+        }
+        .img-placeholder img {
+            max-width: 100%;
+            border-radius: 0.8rem;
+        }
+
+        @media (max-width: 640px) {
+            .section-title { font-size: 1.2rem; }
+            .content-card { padding: 1rem; }
+            .route-item { width: 95%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dynamic-bg"><div class="aura-overlay"></div><div class="grid-enhance"></div></div>
+    <div class="page-container">
+        <div class="content-card">
+            <div class="page-header">
+                <a href="index.html" class="back-link">← 返回首页</a>
+                <h1 class="page-title">📖 作者马旅 · 马尾船政文化探索之旅</h1>
+                <div class="subhead">一次船政文化的深度探访 | 记录 · 感受 · 分享</div>
+            </div>
+
+            <!-- 一、我的马尾之行 -->
+            <div class="section">
+                <div class="section-title">🚶 一、我的马尾之行</div>
+                <div class="section-content">
+                    <p>一次参观<span style="color:#FFD966;">中国船政文化博物馆</span>的经历，让我第一次系统地了解了福建船政的历史。</p>
+                    <p>左宗棠、沈葆桢、船政学堂、扬武号……这些名字和故事深深吸引了我。中国近代史上，竟然有这样一个地方，承载着民族自强的梦想，培养出严复、邓世昌、詹天佑等一代英才。</p>
+                    <div class="照片素材">
+                        <img src="照片素材/author-visit.jpeg" alt="作者参观照片" style="width:100%; border-radius:0.8rem;">
+                    </div>
+                    <p>我被这段历史深深打动，决定制作这个网站，把船政文化分享给更多人。希望通过这个网站，让更多人了解马尾、了解船政、了解那段向海图强的峥嵘岁月。</p>
+                </div>
+            </div>
+
+            <!-- 二、马尾探访路线 -->
+            <div class="section">
+                <div class="section-title">🗺️ 二、马尾探访路线</div>
+                <div class="section-content">
+                    <p>我沿着这条路线，一步步走进船政历史：</p>
+                    <div class="route">
+                        <div class="route-item">
+                            <div class="route-name">📍 中国船政文化博物馆</div>
+                            <div class="route-desc">船政历史的起点 · 全面了解船政</div>
+                        </div>
+                        <div class="route-arrow">↓</div>
+                        <div class="route-item">
+                            <div class="route-name">📍 船政学堂</div>
+                            <div class="route-desc">近代海军摇篮 · 严复、邓世昌曾在此求学</div>
+                        </div>
+                        <div class="route-arrow">↓</div>
+                        <div class="route-item">
+                            <div class="route-name">📍 绘事院</div>
+                            <div class="route-desc">船政设计所 · 清代建筑风貌</div>
+                        </div>
+                        <div class="route-arrow">↓</div>
+                        <div class="route-item">
+                            <div class="route-name">📍 船政衙门</div>
+                            <div class="route-desc">沈葆桢办公地 · 船政管理中心</div>
+                        </div>
+                        <div class="route-arrow">↓</div>
+                        <div class="route-item">
+                            <div class="route-name">📍 昭忠祠</div>
+                            <div class="route-desc">中法海战纪念祠 · 缅怀英烈</div>
+                        </div>
+                        <div class="route-arrow">↓</div>
+                        <div class="route-item">
+                            <div class="route-name">📍 罗星塔</div>
+                            <div class="route-desc">马尾地标 · 俯瞰闽江口</div>
+                        </div>
+                    </div>
+                    <div class="照片素材">
+                        🗺️ 【探访路线图】<br>
+                        <img src="照片素材/route-map.png" style="width:100%; border-radius:0.8rem;>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 三、我的见闻与感受 -->
+            <div class="section">
+                <div class="section-title">💭 三、我的见闻与感受</div>
+                <div class="section-content">
+                    <div class="rec-card">
+                        <div class="rec-title">🏛️ 参观船政学堂</div>
+                        <div class="rec-desc">站在百年学堂前，仿佛能听到当年的读书声。这里培养了严复、邓世昌、詹天佑……是中国近代教育史上的一座丰碑。留学生培养计划，让中国人第一次系统学习西方先进技术，这种开放进取的精神令人敬佩。</div>
+                    </div>
+                    <div class="rec-card">
+                        <div class="rec-title">🕯️ 参观昭忠祠</div>
+                        <div class="rec-desc">甲申中法海战中，船政将士英勇抗敌，壮烈殉国。站在祠前，心中充满敬意。爱国精神，是船政文化最核心的价值。</div>
+                    </div>
+                    <div class="rec-card">
+                        <div class="rec-title">🗼 登罗星塔</div>
+                        <div class="rec-desc">登塔远眺，闽江奔流入海。这里曾是海上丝绸之路的重要航标，也是船政舰队出海的起点。百年风云，尽收眼底。</div>
+                    </div>
+                    <div class="照片素材">
+                        📸 【打卡照片拼图位置】<br>
+                        <img src="照片素材/author-photos.jpg" style="width:100%; border-radius:0.8rem;>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 四、船政文化推荐 -->
+            <div class="section">
+                <div class="section-title">📚 四、船政文化推荐</div>
+                <div class="section-content">
+                    <div class="rec-card">
+                        <div class="rec-title">📍 值得参观的景点</div>
+                        <div class="rec-desc">中国船政文化博物馆、船政文化城、罗星塔、昭忠祠、船政衙门、绘事院</div>
+                    </div>
+                    <div class="rec-card">
+                        <div class="rec-title">📖 推荐书籍</div>
+                        <div class="rec-desc">《船政文化史》《福州船政局》《船政学堂》《中国近代海军史》</div>
+                    </div>
+                    <div class="rec-card">
+                        <div class="rec-title">🎬 推荐纪录片</div>
+                        <div class="rec-desc">《船政学堂》《船政风云》《马尾往事》《甲午甲申》</div>
+                    </div>
+                    <div class="rec-card">
+                        <div class="rec-title">🎉 文化活动</div>
+                        <div class="rec-desc">船政文化节、船政讲坛、船政研学活动</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 结语 -->
+            <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.4); border-radius: 1rem; text-align: center;">
+                <p style="color: #FFE6B0;">🌟 船政精神 · 薪火相传 🌟</p>
+                <p style="color: #bcb0e6; font-size: 0.8rem; margin-top: 0.5rem;">感谢您访问我的网站，希望这次“马旅”能带您走近船政、了解船政、爱上船政。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI小助手 -->
+    <link rel="stylesheet" href="ai-chatbot.css">
+    <script src="ai-chatbot.js"></script>
+    <script>console.log("作者马旅页面已加载");</script>
+</body>
+</html>

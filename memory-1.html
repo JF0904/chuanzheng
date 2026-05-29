@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>船政缘起 · 七个历史节点</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: #0a0a2a;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Noto Serif SC', 'Georgia', serif;
+        }
+        .page-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+        }
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+        .dynamic-bg::before {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="0.9"/></svg>');
+            background-size: 90px 90px;
+            background-repeat: repeat;
+            animation: floatSlow 32s linear infinite;
+            pointer-events: none;
+        }
+        .dynamic-bg::after {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.6"/></svg>');
+            background-size: 110px 110px;
+            background-repeat: repeat;
+            animation: floatReverse 40s linear infinite reverse;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .dynamic-bg .aura-overlay {
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            background: radial-gradient(circle at 30% 40%, rgba(120, 80, 200, 0.25), transparent 60%),
+                        repeating-radial-gradient(circle at 70% 60%, rgba(200, 130, 255, 0.1), transparent 80px);
+            filter: blur(65px);
+            mix-blend-mode: screen;
+            animation: slowRotate 34s infinite reverse linear;
+            pointer-events: none;
+        }
+        .dynamic-bg .grid-enhance {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px), repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px);
+            pointer-events: none;
+            animation: subtleShift 24s linear infinite;
+        }
+        @keyframes floatSlow {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-120px, -120px) rotate(360deg); }
+        }
+        @keyframes floatReverse {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(80px, 80px) rotate(360deg); }
+        }
+        @keyframes slowRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes subtleShift {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .content-card {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 2rem;
+            max-width: 1000px;
+            width: 100%;
+            border: 1px solid rgba(200, 180, 255, 0.5);
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(210, 170, 255, 0.5);
+            padding-bottom: 1rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #FFD966;
+            text-decoration: none;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 217, 102, 0.5);
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+        }
+        .back-link:hover {
+            background: rgba(255, 217, 102, 0.2);
+            transform: translateY(-2px);
+        }
+        .spirit-title {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFE6B0, #FFD966, #FFB347);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        /* 七个卡片入口 */
+        .nodes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .node-card {
+            background: rgba(30, 25, 55, 0.8);
+            backdrop-filter: blur(4px);
+            border-radius: 1.2rem;
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(210, 170, 255, 0.5);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            text-align: left;
+        }
+        .node-card:hover {
+            transform: translateX(8px);
+            border-color: #FFD966;
+            box-shadow: 0 0 20px rgba(255, 217, 102, 0.3);
+            background: rgba(40, 30, 70, 0.9);
+        }
+        .node-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #FFE6B0;
+            margin-bottom: 0.3rem;
+            letter-spacing: 1px;
+        }
+        .node-sub {
+            font-size: 0.85rem;
+            color: #bcb0e6;
+            border-left: 3px solid #FFD966;
+            padding-left: 0.8rem;
+        }
+        /* 详情区域（点击后展开） */
+        .detail-area {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, margin 0.3s;
+            margin-top: 0;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 1rem;
+            padding: 0 1rem;
+        }
+        .detail-area.open {
+            max-height: 800px;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-top: 1px dashed rgba(255, 217, 102, 0.4);
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #f0ecff;
+            text-align: justify;
+        }
+        .img-placeholder {
+            margin: 1rem 0;
+            background: rgba(0,0,0,0.4);
+            border-radius: 1rem;
+            padding: 0.8rem;
+            text-align: center;
+            border: 1px dashed rgba(255,217,102,0.5);
+            color: #FFE6B0;
+            font-size: 0.85rem;
+        }
+        .img-placeholder img {
+            max-width: 100%;
+            border-radius: 0.8rem;
+        }
+        @media (max-width: 640px) {
+            .node-title { font-size: 1.2rem; }
+            .content-card { padding: 1.2rem; }
+        }
+    </style>
+</head>
+<!-- AI小助手样式和脚本 -->
+<link rel="stylesheet" href="ai-chatbot.css">
+<script src="ai-chatbot.js"></script>
+<body>
+    <div class="dynamic-bg"><div class="aura-overlay"></div><div class="grid-enhance"></div></div>
+    <div class="page-container">
+        <div class="content-card">
+            <div class="page-header">
+                <a href="mawei-memory.html" class="back-link">← 返回马尾记忆</a>
+                <h1 class="spirit-title">🏛️ 船政缘起 · 七个历史节点</h1>
+                <div style="font-size:0.85rem; color:#bcb0e6; margin-top:0.3rem;">点击任意节点，展开详细史实</div>
+            </div>
+            <div class="nodes-list" id="nodesList"></div>
+        </div>
+    </div>
+    <script>
+        const nodesData = [
+            {
+                title: "1. 时代危局",
+                subtitle: "国门洞开，海防崩塌",
+                content: `<p>19 世纪中叶，两次鸦片战争击碎了清王朝 “天朝上国” 的迷梦。西方列强凭借坚船利炮，从东南沿海长驱直入，强迫签订一系列不平等条约。</p>
+                          <p>当时中国有海无防、水师废弛、战船老旧，面对蒸汽铁甲舰毫无还手之力。林则徐、魏源等人率先提出 “师夷长技以制夷”，呼吁学习西方造船、造炮技术，重建海防。</p>
+                          <p>第二次鸦片战争后，洋务运动兴起，一批官员决心自强求富、兴办实业、建设海军，福建船政就在这一历史浪潮中酝酿而生。</p>`
+            },
+            {
+                title: "2. 左宗棠上疏",
+                subtitle: "东南大利，在水而不在陆",
+                content: `<p>同治五年（1866 年 6 月 25 日），时任闽浙总督左宗棠向清廷呈上《试造轮船先陈大概情形折》，正式奏请在福建设局造船、创办船政。</p>
+                          <div class="img-placeholder">📷 【左宗棠】<br><img src="照片素材/zuozongtang.jpeg" alt="左宗棠" style="max-width:100%; border-radius:0.8rem;">
+                          <p><strong>奏折核心观点：</strong><br>
+                          “东南大利，在水而不在陆”：中国安危关键在海疆，必须掌握造船与航海主动权。<br>
+                          夺彼族之所恃：学习西方技术，自己造轮船、建海军，才能抵御外侮、分洋商之利。<br>
+                          师夷制夷、自主自强：不只买船，更要建厂、购机器、雇洋匠、教华人，最终实现中国人自造、自驾。</p>
+                          <p>清廷高度认可，不到 20 天（7 月 14 日）正式批准，上谕称：“自强之道，全在振奋精神…… 试造火轮船，实系当今应办急务。”</p>`
+            },
+            {
+                title: "3. 选址马尾",
+                subtitle: "闽江口的天然良港",
+                content: `<p>左宗棠亲赴福州周边踏勘，最终选定马尾作为船政基地，理由极为关键：</p>
+                          <div class="img-placeholder">🌊 【闽江口】<br><img src="照片素材/minjiang.png" alt="闽江口" style="max-width:100%; border-radius:0.8rem;">
+                          <p>地理位置绝佳：位于闽江入海口，依山傍水、江面开阔、水深足够、避风条件好，适合建大船厂、泊大船。<br>
+                          海防门户：扼守福州出海要道，进可攻、退可守，是天然的海军基地。<br>
+                          交通与物料便利：靠近福州城，木材、煤炭、粮食补给充足，水路连通沿海各省。</p>
+                          <p>1866 年夏秋，马尾江畔一片滩涂，从此开始变为远东规模最大、设备最新的造船厂与海军基地。</p>`
+            },
+            {
+                title: "4. 借才异域",
+                subtitle: "聘法籍监督，订 “五年学成” 之约",
+                content: `<p>为快速掌握西方技术，左宗棠采取 “借才异域、为我所用” 策略：</p>
+                          <p>聘请法国人日意格（Prosper Giquel）为正监督、德克碑（Paul d’Aiguebelle）为副监督。<br>
+                          招募37–51 名法国技术人员与工匠，负责机器安装、造船指导、教学授课。<br>
+                          签订严格合同：保证5 年内中国工匠能独立造船、驾船；达标重赏，违约重罚，严防洋人把持技术。</p>`
+            },
+            {
+                title: "5. 沈葆桢接棒",
+                subtitle: "总理船政，奠基立业",
+                content: `<p>1866 年 10 月，左宗棠调任陕甘总督，离闽前紧急举荐丁忧在籍的沈葆桢出任总理船政大臣。</p>
+                          <div class="img-placeholder">👤 【沈葆桢】<br><img src="照片素材/shenbaozhen.png" alt="沈葆桢" style="max-width:100%; border-radius:0.8rem;"></div>
+                          <p>沈葆桢（林则徐女婿）为人刚正、务实强干，到任后：完善机构、定章程、严纪律；加速建厂、购机器、建船坞；创办船政学堂（求是堂艺局），培养造船、驾驶、外语人才；奠定 “造船 + 办学 + 建军” 三位一体格局。</p>`
+            },
+            {
+                title: "6. 船政诞生",
+                subtitle: "中国近代海军的摇篮",
+                content: `<p>1866 年 12 月 23 日，福建船政在马尾正式动工兴建。这一天，被视为中国近代造船工业与近代海军的起点。</p>
+                          <p>它不只是一座船厂：近代工业发祥地；近代海军摇篮；中国第一支正规海军舰队诞生地；近代教育先驱；开创中国近代科技、海军、外语教育；中西文化交汇点：引进西学、培养出严复、詹天佑、萨镇冰等一代英才。</p>`
+            },
+            {
+                title: "7. 历史回响",
+                subtitle: "为何是马尾，为何是船政",
+                content: `<p>船政缘起，本质是一个民族在屈辱中觉醒、在危局中自救的尝试。马尾这片土地，因船政而成为：中国自强梦开始的地方；近代海防从无到有的地方；中国人第一次系统学习西方工业文明、自主造舰建军的地方。</p>
+                          <p>闽江潮涌，鼓山作证。从 1866 年起，马尾的每一块砖石、每一艘舰船、每一次学堂钟声，都在诉说：中国虽弱，不甘沉沦；海疆虽险，必当自强。</p>`
+            }
+        ];
+
+        const container = document.getElementById('nodesList');
+        function buildNodes() {
+            container.innerHTML = '';
+            nodesData.forEach((node, idx) => {
+                const card = document.createElement('div');
+                card.className = 'node-card';
+                card.innerHTML = `
+                    <div class="node-title">${node.title}</div>
+                    <div class="node-sub">${node.subtitle}</div>
+                    <div class="detail-area" id="detail-${idx}">
+                        <div class="detail-text">${node.content}</div>
+                    </div>
+                `;
+                const detailDiv = card.querySelector(`.detail-area`);
+                card.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isOpen = detailDiv.classList.contains('open');
+                    document.querySelectorAll('.detail-area').forEach(d => d.classList.remove('open'));
+                    if (!isOpen) detailDiv.classList.add('open');
+                });
+                container.appendChild(card);
+            });
+        }
+        buildNodes();
+        console.log("船政缘起 — 7个节点入口已加载，点击展开详情");
+    </script>
+</body>
+</html>

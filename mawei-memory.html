@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>马尾记忆 · 船政四大板块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: #0a0a2a;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Noto Serif SC', 'Georgia', serif;
+        }
+
+        .page-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .dynamic-bg::before {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="0.9"/></svg>');
+            background-size: 90px 90px;
+            background-repeat: repeat;
+            animation: floatSlow 32s linear infinite;
+            pointer-events: none;
+        }
+
+        .dynamic-bg::after {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.6"/></svg>');
+            background-size: 110px 110px;
+            background-repeat: repeat;
+            animation: floatReverse 40s linear infinite reverse;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .dynamic-bg .aura-overlay {
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            background: radial-gradient(circle at 30% 40%, rgba(120, 80, 200, 0.25), transparent 60%),
+                        repeating-radial-gradient(circle at 70% 60%, rgba(200, 130, 255, 0.1), transparent 80px);
+            filter: blur(65px);
+            mix-blend-mode: screen;
+            animation: slowRotate 34s infinite reverse linear;
+            pointer-events: none;
+        }
+
+        .dynamic-bg .grid-enhance {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px), repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px);
+            pointer-events: none;
+            animation: subtleShift 24s linear infinite;
+        }
+
+        @keyframes floatSlow {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-120px, -120px) rotate(360deg); }
+        }
+        @keyframes floatReverse {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(80px, 80px) rotate(360deg); }
+        }
+        @keyframes slowRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes subtleShift {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .content-card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 2rem;
+            max-width: 1000px;
+            width: 100%;
+            border: 1px solid rgba(200, 180, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(210, 170, 255, 0.5);
+            padding-bottom: 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #FFD966;
+            text-decoration: none;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 217, 102, 0.5);
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+        }
+        .back-link:hover {
+            background: rgba(255, 217, 102, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .page-title {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFE6B0, #FFD966, #FFB347);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .subhead {
+            font-size: 0.9rem;
+            color: #bcb0e6;
+            margin-top: 0.3rem;
+        }
+
+        /* 两两一排的网格布局：2x2 */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.8rem;
+            margin-top: 1.5rem;
+        }
+
+        .module-card {
+            background: rgba(20, 15, 45, 0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 1.5rem;
+            padding: 1.8rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(210, 170, 255, 0.4);
+            text-decoration: none;
+            display: block;
+        }
+        .module-card:hover {
+            transform: translateY(-8px);
+            border-color: #FFD966;
+            box-shadow: 0 0 25px rgba(255, 217, 102, 0.3);
+            background: rgba(30, 20, 60, 0.8);
+        }
+        .module-icon {
+            font-size: 2.8rem;
+            margin-bottom: 0.8rem;
+        }
+        .module-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #FFE6B0;
+            margin-bottom: 0.4rem;
+        }
+        .module-sub {
+            font-size: 0.85rem;
+            color: #bcb0e6;
+            letter-spacing: 1px;
+        }
+        .module-desc {
+            font-size: 0.75rem;
+            color: #ccc;
+            margin-top: 0.8rem;
+        }
+
+        /* 响应式：手机屏幕时变成一列 */
+        @media (max-width: 640px) {
+            .modules-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .module-title { font-size: 1.2rem; }
+            .content-card { padding: 1.2rem; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; background: #1a0f2a; }
+        ::-webkit-scrollbar-thumb { background: #9f7eff; border-radius: 6px; }
+        ::selection { background: #9f7eff; color: #0a0a2a; }
+    </style>
+</head>
+<body>
+    <div class="dynamic-bg">
+        <div class="aura-overlay"></div>
+        <div class="grid-enhance"></div>
+    </div>
+    <div class="page-container">
+        <div class="content-card">
+            <div class="page-header">
+                <a href="index.html" class="back-link">← 返回首页</a>
+                <h1 class="page-title">⛵ 马尾记忆 · Mawei Memory ⚓</h1>
+                <div class="subhead">中国近代海军的摇篮 · 船政精神的文化殿堂</div>
+            </div>
+            <div class="modules-grid">
+                <a href="memory-1.html" class="module-card">
+                    <div class="module-icon">🏛️</div>
+                    <div class="module-title">船政缘起</div>
+                    <div class="module-sub">山河破碎下的自强之梦</div>
+                    <div class="module-desc">从时代危局到船政诞生，七个关键节点</div>
+                </a>
+                <a href="memory-2.html" class="module-card">
+                    <div class="module-icon">🚢</div>
+                    <div class="module-title">舰船丰碑</div>
+                    <div class="module-sub">巨轮劈波出海铸就丰碑</div>
+                    <div class="module-desc">万年清 · 扬武 · 开济，铁甲星驰</div>
+                </a>
+                <a href="memory-3.html" class="module-card">
+                    <div class="module-icon">🎓</div>
+                    <div class="module-title">历史名人</div>
+                    <div class="module-sub">船政学堂走出的民族脊梁</div>
+                    <div class="module-desc">魏翰、刘步蟾、邓世昌、严复、詹天佑等</div>
+                </a>
+                <a href="memory-4.html" class="module-card">
+                    <div class="module-icon">📜</div>
+                    <div class="module-title">毕业名录</div>
+                    <div class="module-sub">马尾前后学堂 · 制造驾驶管轮</div>
+                    <div class="module-desc">历届先贤名录，铭记不朽功绩</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- AI小助手 -->
+    <link rel="stylesheet" href="ai-chatbot.css">
+    <script src="ai-chatbot.js"></script>
+    <script> console.log("马尾记忆主页面 — 四大板块入口已加载 (2x2布局)"); </script>
+</body>
+</html>

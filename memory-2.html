@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>舰船丰碑 · 船政三大名舰</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: #0a0a2a;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Noto Serif SC', 'Georgia', serif;
+        }
+        .page-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+        }
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+        .dynamic-bg::before {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="0.9"/></svg>');
+            background-size: 90px 90px;
+            background-repeat: repeat;
+            animation: floatSlow 32s linear infinite;
+            pointer-events: none;
+        }
+        .dynamic-bg::after {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.6"/></svg>');
+            background-size: 110px 110px;
+            background-repeat: repeat;
+            animation: floatReverse 40s linear infinite reverse;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .dynamic-bg .aura-overlay {
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            background: radial-gradient(circle at 30% 40%, rgba(120, 80, 200, 0.25), transparent 60%),
+                        repeating-radial-gradient(circle at 70% 60%, rgba(200, 130, 255, 0.1), transparent 80px);
+            filter: blur(65px);
+            mix-blend-mode: screen;
+            animation: slowRotate 34s infinite reverse linear;
+            pointer-events: none;
+        }
+        .dynamic-bg .grid-enhance {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px), repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 50px);
+            pointer-events: none;
+            animation: subtleShift 24s linear infinite;
+        }
+        @keyframes floatSlow {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-120px, -120px) rotate(360deg); }
+        }
+        @keyframes floatReverse {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(80px, 80px) rotate(360deg); }
+        }
+        @keyframes slowRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes subtleShift {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .content-card {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            border: 1px solid rgba(200, 180, 255, 0.5);
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(210, 170, 255, 0.5);
+            padding-bottom: 1rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #FFD966;
+            text-decoration: none;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 217, 102, 0.5);
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+        }
+        .back-link:hover {
+            background: rgba(255, 217, 102, 0.2);
+            transform: translateY(-2px);
+        }
+        .spirit-title {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFE6B0, #FFD966, #FFB347);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .ships-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            margin-top: 1.5rem;
+        }
+        .ship-card {
+            background: rgba(30, 25, 55, 0.8);
+            backdrop-filter: blur(4px);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(210, 170, 255, 0.5);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+        .ship-card:hover {
+            transform: translateY(-5px);
+            border-color: #FFD966;
+            box-shadow: 0 0 25px rgba(255, 217, 102, 0.3);
+        }
+        .ship-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #FFE6B0;
+            margin-bottom: 1rem;
+            border-left: 4px solid #FFD966;
+            padding-left: 1rem;
+        }
+        .img-placeholder {
+            margin: 1rem 0;
+            background: rgba(0,0,0,0.5);
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: center;
+            border: 1px dashed rgba(255,217,102,0.5);
+            color: #bcb0e6;
+            font-size: 0.9rem;
+        }
+        .img-placeholder img {
+            max-width: 100%;
+            border-radius: 0.8rem;
+        }
+        .ship-desc {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #f0ecff;
+            text-align: justify;
+            margin-top: 0.8rem;
+        }
+        @media (max-width: 640px) {
+            .ship-name { font-size: 1.4rem; }
+            .content-card { padding: 1.2rem; }
+        }
+    </style>
+</head>
+<!-- AI小助手样式和脚本 -->
+<link rel="stylesheet" href="ai-chatbot.css">
+<script src="ai-chatbot.js"></script>
+<body>
+    <div class="dynamic-bg"><div class="aura-overlay"></div><div class="grid-enhance"></div></div>
+    <div class="page-container">
+        <div class="content-card">
+            <div class="page-header">
+                <a href="mawei-memory.html" class="back-link">← 返回马尾记忆</a>
+                <h1 class="spirit-title">🚢 舰船丰碑 · 船政三大名舰</h1>
+                <div style="font-size:0.85rem; color:#bcb0e6; margin-top:0.3rem;">巨轮劈波出海，铸就海防丰碑</div>
+            </div>
+            <div class="ships-grid">
+                <div class="ship-card">
+                    <div class="ship-name">万年清号</div>
+                    <div class="img-placeholder">
+                        📷 【万年清号图片位置】<br><img src="照片素材/wannianqinghao.png">;
+                    </div>
+                    <div class="ship-desc">船政自主建成第一艘千吨级蒸汽木壳兵船，首航便远航多地，宣告国产舰船正式走向深蓝。</div>
+                </div>
+                <div class="ship-card">
+                    <div class="ship-name">扬武号</div>
+                    <div class="img-placeholder">
+                        📷 【扬武号图片位置】<br><img src="照片素材/yangwuhao.png">;
+                    </div>
+                    <div class="ship-desc">当时吨位、火力顶尖的主力军舰，担任舰队旗舰，常驻闽江海口镇守海防。</div>
+                </div>
+                <div class="ship-card">
+                    <div class="ship-name">开济号</div>
+                    <div class="img-placeholder">
+                        📷 【开济号图片位置】<br><img src="照片素材/kaijihao.png">;
+                    </div>
+                    <div class="ship-desc">铁质结构巡洋舰，工艺水准对标同期西方舰船，防护与作战能力大幅跃升。</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script> console.log("舰船丰碑 — 三大名舰已加载"); </script>
+</body>
+</html>
